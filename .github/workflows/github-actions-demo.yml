@@ -1,3 +1,9 @@
+# ✍️ Description:
+# This action is used to run a demo action on the project.
+# Runs on pushes to each branch
+
+# 🚨 GITHUB SECRETS REQUIRED: NONE
+
 name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push]

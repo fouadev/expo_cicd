@@ -1,0 +1,47 @@
+# ✍️ Description:
+# This action is used to run unit tests
+# Runs on pull requests and pushes to  the main/master/develop branches
+# Based on the event type:
+#   - If it's a pull request, it will run the tests and post a comment with coverage details.
+#   - If it's a push to main/master/develop, it will run the tests and add the check to the commit.
+
+# 🚨 GITHUB SECRETS REQUIRED: NONE
+
+name: 🌡️ Tests (jest)
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+jobs:
+  test:
+    name: Tests (jest)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📦 Checkout project repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: 📦 Setup Project
+        uses: ./.github/actions/setup-node-yarn-install
+
+      - name: 🏃‍♂️ Run Tests
+        run: yarn test
+
+      - name: Jest Coverage Comment
+        uses: MishaKav/jest-coverage-comment@main
+        if: (success() || failure()) && github.event_name == 'pull_request'
+        with:
+          coverage-summary-path: ./coverage/coverage-summary.json
+          summary-title: "💯 Test Coverage"
+          badge-title: Coverage
+          create-new-comment: false
+          junitxml-title: 😎 Tests Results
+          junitxml-path: ./coverage/jest-junit.xml
+          coverage-title: 👀 Tests Details
+          coverage-path: ./coverage/coverage.txt
+          report-only-changed-files: true
