@@ -5,7 +5,7 @@
 
 # 🚨 GITHUB SECRETS REQUIRED: NONE
 
-name: Expo Doctor (expo)
+name: 🚑 Expo Doctor (expo)
 
 on:
   push:
