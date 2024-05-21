@@ -20,6 +20,10 @@ on:
       - "package.json"
       - "yarn.lock"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   doctor:
     name: Expo Doctor (expo)

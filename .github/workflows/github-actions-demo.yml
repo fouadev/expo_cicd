@@ -7,6 +7,12 @@
 name: ⚛️ GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push]
+
+#Cancel other running jobs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest

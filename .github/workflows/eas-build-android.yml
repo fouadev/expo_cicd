@@ -4,6 +4,12 @@ on:
   pull_request:
     branches:
       - main
+
+#Cancel other running jobs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Install and build
