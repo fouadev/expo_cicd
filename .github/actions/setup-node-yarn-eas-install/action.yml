@@ -1,0 +1,55 @@
+# 🔗 Links:
+# Composite actions docs: https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
+
+# ✍️ Description:
+# This is a composite action, which means it can be used in other actions.
+# It is used in almost all workflows to set up the environment and install dependencies.
+# Updating  the package manager or Node version here will be reflected in all workflows.
+
+# 👀 Example usage:
+#       - name : 📦 Setup Project
+#         uses: ./.github/actions/setup-node-yarn-eas-install
+
+name: "📦 Setup Project"
+description: "Setup  Node + Yarn + Install Dependencies"
+
+inputs:
+  expo-token:
+    description: "Expo token for authentication"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: "yarn"
+        cache-dependency-path: "yarn.lock"
+
+    - name: 📦 Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+      shell: bash
+    - name: 📦 Restore node_modules from cache
+      uses: actions/cache@v2
+      id: yarn-cache
+      env:
+        cache-name: cache-node-modules
+      with:
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-${{ env.cache-name }}-
+          ${{ runner.os }}-yarn-
+          ${{ runner.os }}-
+
+    - name: 🏗 Setup EAS
+      uses: expo/expo-github-action@v8
+      with:
+        eas-version: latest
+        token: ${{ inputs.expo-token }}
+
+    - name: 📦 Install Project Dependencies
+      run: yarn install --frozen-lockfile
+      shell: bash
