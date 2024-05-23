@@ -12,6 +12,12 @@
 
 name: "📦 Setup Project"
 description: "Setup  Node + Yarn + Install Dependencies"
+
+inputs:
+  expo-token:
+    description: "Expo token for authentication"
+    required: true
+
 runs:
   using: "composite"
   steps:
@@ -42,7 +48,7 @@ runs:
       uses: expo/expo-github-action@v8
       with:
         eas-version: latest
-        token: ${{ secrets.EXPO_TOKEN }}
+        token: ${{ inputs.expo-token }}
 
     - name: 📦 Install Project Dependencies
       run: yarn install --frozen-lockfile
